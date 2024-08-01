@@ -42,19 +42,23 @@ public class ServerOperation {
         }
     }
 
-    private void removeFile() {
+    private boolean removeFile() {
         System.out.println("You choose to remove the existing file");
+        return true;
     }
 
-    private void modifyFile() {
+    private boolean modifyFile() {
         System.out.println("You choose to modify a existing file");
+        return true;
     }
 
-    private void retrieveFile() {
-        System.out.println("You choose to retrieve a existing file");
+    private boolean retrieveFile() {
+        System.out.println("You choose to retrieve a existing file"); 
+        return true;
     }
 
-    private void addFile() {
+    private boolean addFile() {
         System.out.println("You choose to add a new file");
+        return true;
     }
 }
