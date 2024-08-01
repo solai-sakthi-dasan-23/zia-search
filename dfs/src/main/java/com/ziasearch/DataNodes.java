@@ -1,23 +1,26 @@
 package com.ziasearch;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 public class DataNodes {
 
+    public File navigateToNodeMaster() throws Exception {
+        // Get the class file path
+        String classFilePath = App.class.getResource(App.class.getSimpleName() + ".class").toURI().getPath();
+            
+        // Convert to File object
+        File classFile = new File(classFilePath);
+        
+        // Get the directory containing the class file
+        File directory = classFile.getParentFile().getParentFile();
+        File nodesFolder = new File(directory.getAbsolutePath(), "Nodes");
+        return nodesFolder;
+    }
+
     public void getNodesList() {
         try {
-            // Get the class file path
-            String classFilePath = App.class.getResource(App.class.getSimpleName() + ".class").toURI().getPath();
-            
-            // Convert to File object
-            File classFile = new File(classFilePath);
-            
-            // Get the directory containing the class file
-            File directory = classFile.getParentFile().getParentFile();
-
-            File nodesFolder = new File(directory.getAbsolutePath(), "Nodes");            
+            File nodesFolder = navigateToNodeMaster();   
             File[] fileList = nodesFolder.listFiles();
             for (File file : fileList) {
                 System.out.println(file.getName());
@@ -36,12 +39,9 @@ public class DataNodes {
         }
     }
 
-    public String enterNode(String nodeName) throws URISyntaxException {
+    public String enterNode(String nodeName) throws Exception {
 
-        String classFilePath = App.class.getResource(App.class.getSimpleName() + ".class").toURI().getPath();
-        File classFile = new File(classFilePath);
-        File directory = classFile.getParentFile().getParentFile();
-        File nodesFolder = new File(directory.getAbsolutePath(), "Nodes");  
+        File nodesFolder = navigateToNodeMaster(); 
         File node = new File(nodesFolder.getAbsolutePath(), nodeName);
         System.out.println(node.getAbsolutePath());
         return node.getAbsolutePath();

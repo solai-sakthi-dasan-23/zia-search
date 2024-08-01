@@ -1,12 +1,20 @@
 package com.ziasearch;
 
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class ServerOperation {
 
     Scanner scanner = new Scanner(System.in);
     DataNodes dataNodes = new DataNodes();
+    String nodeName;
     
     public int operationType () {
         System.out.println("What is the operation you need to perform");
@@ -20,14 +28,14 @@ public class ServerOperation {
         return operation;
     }
 
-    public void operationNavigation(int operation) throws URISyntaxException {
+    public void operationNavigation(int operation) throws Exception {
 
         
         //get the file name, node that the file should be acted in the node
         System.out.println();
         System.out.print("Enter the node name : ");
         scanner.nextLine();
-        String nodeName = scanner.nextLine();
+        nodeName = scanner.nextLine();
         String nodeNav = dataNodes.enterNode(nodeName);
 
         System.out.println();
@@ -38,7 +46,11 @@ public class ServerOperation {
         switch (operation) {
 
             case 1:
-                addFile(nodeNav, filename);
+                scanner.nextLine();
+                System.out.println("Enter the file path where the mentioned file is present");
+                String filePath = scanner.nextLine();
+                addFile(nodeNav, filePath, filename);
+                replicateAddedFile(filePath, filename);
                 break;
 
             case 2:
@@ -73,8 +85,50 @@ public class ServerOperation {
         return true;
     }
 
-    private boolean addFile(String nodeNav, String filename) {
+    private boolean addFile(String nodeNav, String filePath, String filename) throws Exception {
         System.out.println("You choose to add a new file : " + filename);
+
+        Path sourcePath = Paths.get(filePath + "\\" + filename);
+        Path destinationPath = Paths.get(nodeNav + "\\" + filename);
+        
+        // Get the destination directory
+        Path destinationDir = destinationPath.getParent();
+
+        try {
+            // Create destination directory if it does not exist
+            if (Files.notExists(destinationDir)) {
+                Files.createDirectories(destinationDir);
+            }
+
+            // Copy the file to the new location
+            Files.copy(sourcePath, destinationPath);
+            System.out.println("File copied successfully.");
+        } catch (IOException e) {
+            System.err.println("Error copying file.");
+            e.printStackTrace();
+        }
         return true;
+    }
+
+    public void replicateAddedFile(String filePath, String filename) throws Exception {
+        DataNodes dataNodes = new DataNodes();
+        File nodesFolder = dataNodes.navigateToNodeMaster();
+        File[] nodesList = nodesFolder.listFiles();
+        List<String> nodesListFiles = new ArrayList<>();
+        for (File file : nodesList) {
+            nodesListFiles.add(file.getName());
+        }
+        int indexOfNode = nodesListFiles.indexOf(nodeName);
+        indexOfNode++;
+        int replicationCount = 0;
+        while (replicationCount<=3) {
+            String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
+            addFile(nodeNavrep, filePath, filename);
+            replicationCount++;
+            indexOfNode++;
+            if (indexOfNode>10) {
+                indexOfNode=0;
+            }
+        }
     }
 }

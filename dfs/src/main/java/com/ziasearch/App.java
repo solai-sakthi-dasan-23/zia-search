@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class App 
 {
     @SuppressWarnings("unused")
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Exception
     {
         System.out.println("WELCOME TO DISTRIBUTED FILE SYSTEM");
         System.out.println();
