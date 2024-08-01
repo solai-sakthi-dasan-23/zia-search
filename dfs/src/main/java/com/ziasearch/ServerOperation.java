@@ -1,4 +1,4 @@
-package com;
+package com.ziasearch;
 
 import java.util.Scanner;
 
@@ -43,22 +43,18 @@ public class ServerOperation {
     }
 
     private void removeFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeFile'");
+        System.out.println("You choose to remove the existing file");
     }
 
     private void modifyFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'modifyFile'");
+        System.out.println("You choose to modify a existing file");
     }
 
     private void retrieveFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'retrieveFile'");
+        System.out.println("You choose to retrieve a existing file");
     }
 
     private void addFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addFile'");
+        System.out.println("You choose to add a new file");
     }
 }

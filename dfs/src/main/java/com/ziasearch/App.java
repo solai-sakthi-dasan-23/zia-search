@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 import javax.sound.midi.Soundbank;
 
-import com.ServerOperation;
-
 /**
  * Hello world!
  *
@@ -24,7 +22,7 @@ public class App
 
         ServerOperation serverOperation = new ServerOperation();
         int operation = serverOperation.operationType();
-        
+        serverOperation.operationNavigation(operation);
 
         scanner.close();
     }
