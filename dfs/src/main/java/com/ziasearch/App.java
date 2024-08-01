@@ -1,5 +1,6 @@
 package com.ziasearch;
 
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 
@@ -28,7 +29,11 @@ public class App
         //getting the type of operation that user need to perform in the node
         ServerOperation serverOperation = new ServerOperation();
         int operation = serverOperation.operationType();
-        serverOperation.operationNavigation(operation);
+        try {
+            serverOperation.operationNavigation(operation);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
 
         scanner.close();
     }

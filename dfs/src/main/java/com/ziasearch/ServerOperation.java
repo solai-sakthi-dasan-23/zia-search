@@ -1,10 +1,12 @@
 package com.ziasearch;
 
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 public class ServerOperation {
 
     Scanner scanner = new Scanner(System.in);
+    DataNodes dataNodes = new DataNodes();
     
     public int operationType () {
         System.out.println("What is the operation you need to perform");
@@ -18,33 +20,37 @@ public class ServerOperation {
         return operation;
     }
 
-    public void operationNavigation(int operation) {
+    public void operationNavigation(int operation) throws URISyntaxException {
 
         
         //get the file name, node that the file should be acted in the node
         System.out.println();
-        System.out.print("Enter the node : ");
-        String nodeName = scanner.next();
+        System.out.print("Enter the node name : ");
+        scanner.nextLine();
+        String nodeName = scanner.nextLine();
+        String nodeNav = dataNodes.enterNode(nodeName);
+
         System.out.println();
-        System.out.print("Enter the file : ");
-        String filename = scanner.next();
         
+        System.out.print("Enter the file : ");
+        String filename = scanner.nextLine();
+                
         switch (operation) {
 
             case 1:
-                addFile(nodeName, filename);
+                addFile(nodeNav, filename);
                 break;
 
             case 2:
-                retrieveFile(nodeName, filename);
+                retrieveFile(nodeNav, filename);
                 break;
 
             case 3:
-                modifyFile(nodeName, filename);
+                modifyFile(nodeNav, filename);
                 break;
 
             case 4:
-                removeFile(nodeName, filename);
+                removeFile(nodeNav, filename);
                 break;
         
             default:
@@ -52,23 +58,23 @@ public class ServerOperation {
         }
     }
 
-    private boolean removeFile(String nodeName, String filename) {
-        System.out.println("You choose to remove the existing file");
+    private boolean removeFile(String nodeNav, String filename) {
+        System.out.println("You choose to remove the existing file : " + filename);
         return true;
     }
 
-    private boolean modifyFile(String nodeName, String filename) {
-        System.out.println("You choose to modify a existing file");
+    private boolean modifyFile(String nodeNav, String filename)  {
+        System.out.println("You choose to modify a existing file : " + filename);
         return true;
     }
 
-    private boolean retrieveFile(String nodeName, String filename) {
-        System.out.println("You choose to retrieve a existing file"); 
+    private boolean retrieveFile(String nodeNav, String filename) {
+        System.out.println("You choose to retrieve a existing file : " + filename); 
         return true;
     }
 
-    private boolean addFile(String nodeName, String filename) {
-        System.out.println("You choose to add a new file");
+    private boolean addFile(String nodeNav, String filename) {
+        System.out.println("You choose to add a new file : " + filename);
         return true;
     }
 }
