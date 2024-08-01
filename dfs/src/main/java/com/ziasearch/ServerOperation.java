@@ -19,22 +19,32 @@ public class ServerOperation {
     }
 
     public void operationNavigation(int operation) {
+
+        
+        //get the file name, node that the file should be acted in the node
+        System.out.println();
+        System.out.print("Enter the node : ");
+        String nodeName = scanner.next();
+        System.out.println();
+        System.out.print("Enter the file : ");
+        String filename = scanner.next();
         
         switch (operation) {
+
             case 1:
-                addFile();
+                addFile(nodeName, filename);
                 break;
 
             case 2:
-                retrieveFile();
+                retrieveFile(nodeName, filename);
                 break;
 
             case 3:
-                modifyFile();
+                modifyFile(nodeName, filename);
                 break;
 
             case 4:
-                removeFile();
+                removeFile(nodeName, filename);
                 break;
         
             default:
@@ -42,22 +52,22 @@ public class ServerOperation {
         }
     }
 
-    private boolean removeFile() {
+    private boolean removeFile(String nodeName, String filename) {
         System.out.println("You choose to remove the existing file");
         return true;
     }
 
-    private boolean modifyFile() {
+    private boolean modifyFile(String nodeName, String filename) {
         System.out.println("You choose to modify a existing file");
         return true;
     }
 
-    private boolean retrieveFile() {
+    private boolean retrieveFile(String nodeName, String filename) {
         System.out.println("You choose to retrieve a existing file"); 
         return true;
     }
 
-    private boolean addFile() {
+    private boolean addFile(String nodeName, String filename) {
         System.out.println("You choose to add a new file");
         return true;
     }

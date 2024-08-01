@@ -22,13 +22,13 @@ public class App
         User user = new User(userId);
 
         //displaying the node
+        NameNode nameNode = new NameNode();
+        nameNode.getNodesList();
 
         //getting the type of operation that user need to perform in the node
         ServerOperation serverOperation = new ServerOperation();
         int operation = serverOperation.operationType();
         serverOperation.operationNavigation(operation);
-
-        //get the file name that the file should be acted in the node
 
         scanner.close();
     }
