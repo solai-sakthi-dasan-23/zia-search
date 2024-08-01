@@ -1,12 +1,15 @@
 package com.ziasearch;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,7 +17,7 @@ public class ServerOperation {
 
     Scanner scanner = new Scanner(System.in);
     DataNodes dataNodes = new DataNodes();
-    String nodeName;
+    String nodeName, fileType, fileName;
     
     public int operationType () {
         System.out.println("What is the operation you need to perform");
@@ -40,8 +43,11 @@ public class ServerOperation {
 
         System.out.println();
         
-        System.out.print("Enter the file : ");
-        String filename = scanner.nextLine();
+        System.out.print("Enter the file name : ");
+        fileName = scanner.nextLine();
+
+        System.out.println("Enter the file type");
+        fileType = scanner.nextLine();
                 
         switch (operation) {
 
@@ -49,20 +55,24 @@ public class ServerOperation {
                 scanner.nextLine();
                 System.out.println("Enter the file path where the mentioned file is present");
                 String filePath = scanner.nextLine();
-                addFile(nodeNav, filePath, filename, false);
-                replicateAddedFile(filePath, filename);
+                addFile(nodeNav, filePath, fileName, fileType, false);
+                replicateAddedFile(filePath, fileName);
                 break;
 
             case 2:
-                retrieveFile(nodeNav, filename);
+                retrieveFile(nodeNav, fileName);
                 break;
 
             case 3:
-                modifyFile(nodeNav, filename);
+                System.out.println("Enter the content to the file");
+                String content = scanner.nextLine();
+                modifyFile(nodeNav, fileName + "." +fileType , content);
+                modifyReplicatedFile(fileName,content);
                 break;
 
             case 4:
-                removeFile(nodeNav, filename);
+                removeFile(nodeNav, fileName, fileType);
+                removeReplicatedFiles(nodeName, fileName + "_replicated");
                 break;
         
             default:
@@ -70,41 +80,107 @@ public class ServerOperation {
         }
     }
 
-    private boolean removeFile(String nodeNav, String filename) {
-        System.out.println("You choose to remove the existing file : " + filename);
+    private void removeReplicatedFiles(String nodeName, String fileName) throws Exception {
+        DataNodes dataNodes = new DataNodes();
+        File nodesFolder = dataNodes.navigateToNodeMaster();
+        File[] nodesList = nodesFolder.listFiles();
+        List<String> nodesListFiles = new ArrayList<>();
+        for (File file : nodesList) {
+            nodesListFiles.add(file.getName());
+        }
+        int indexOfNode = nodesListFiles.indexOf(nodeName);
+        int replicationCount = 0;
+        while (replicationCount<=3) {
+            indexOfNode++;
+            if (indexOfNode==10) {
+                indexOfNode=0;
+            }
+            String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
+            removeFile(nodeNavrep, fileName, fileType);
+            replicationCount++;
+        }
+    }
+
+    private void modifyReplicatedFile(String filename, String content) throws Exception {
+        DataNodes dataNodes = new DataNodes();
+        File nodesFolder = dataNodes.navigateToNodeMaster();
+        File[] nodesList = nodesFolder.listFiles();
+        List<String> nodesListFiles = new ArrayList<>();
+        for (File file : nodesList) {
+            nodesListFiles.add(file.getName());
+        }
+        int indexOfNode = nodesListFiles.indexOf(nodeName);
+        int replicationCount = 0;
+        while (replicationCount<=3) {
+            indexOfNode++;
+            if (indexOfNode==10) {
+                indexOfNode=0;
+            }
+            String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
+            modifyFile(nodeNavrep, filename + "_replicated" + "." + fileType, content);
+            replicationCount++;
+        }
+    }
+
+    private boolean removeFile(String nodeNav, String filename, String fileType) {
+        System.out.println("You choose to remove the existing file : " + filename + "." + fileType);
+        String filePath = nodeNav + "\\" + filename + "." + fileType;
+
+        File file = new File(filePath);
+
+        if (file.delete()) {
+            System.out.println("File deleted successfully.");
+        } else {
+            System.err.println("Failed to delete the file.");
+        }
         return true;
     }
 
-    private boolean modifyFile(String nodeNav, String filename)  {
+    private boolean modifyFile(String nodeNav, String filename, String content)  {
         System.out.println("You choose to modify a existing file : " + filename);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nodeNav + "\\" + filename))) {
+            writer.write(content);
+            System.out.println("File has been rewritten successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing to the file.");
+            e.printStackTrace();
+        }
         return true;
     }
 
     private boolean retrieveFile(String nodeNav, String filename) {
         System.out.println("You choose to retrieve a existing file : " + filename); 
+        File file = new File(nodeNav + "\\" + filename);
+
+        // Use try-with-resources to ensure resources are closed automatically
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            // Read lines one by one
+            while ((line = reader.readLine()) != null) {
+                // Print each line (or process it as needed)
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            // Handle potential IO exceptions
+            System.err.println("Error reading the file.");
+            e.printStackTrace();
+        }
         return true;
     }
 
-    private boolean addFile(String nodeNav, String filePath, String filename, boolean replication) throws Exception {
-        System.out.println("You choose to add a new file : " + filename);
+    private boolean addFile(String nodeNav, String filePath, String filename, String fileType, boolean replication) throws Exception {
+        System.out.println("You choose to add a new file : " + filename + "." + fileType);
 
-        Path sourcePath = Paths.get(filePath + "\\" + filename);
+        Path sourcePath = Paths.get(filePath + "\\" + filename + "." + fileType);
         Path destinationPath;
         if (replication==true) {
-            destinationPath = Paths.get(nodeNav + "\\" + filename + "_replicated");
+            destinationPath = Paths.get(nodeNav + "\\" + filename + "_replicated" + "." + fileType);
         } else {
-            destinationPath = Paths.get(nodeNav + "\\" + filename);
+            destinationPath = Paths.get(nodeNav + "\\" + filename + "." + fileType);
         }
-        
-        // Get the destination directory
-        Path destinationDir = destinationPath.getParent();
 
         try {
-            // Create destination directory if it does not exist
-            if (Files.notExists(destinationDir)) {
-                Files.createDirectories(destinationDir);
-            }
-
             // Copy the file to the new location
             Files.copy(sourcePath, destinationPath);
             System.out.println("File copied successfully.");
@@ -131,7 +207,7 @@ public class ServerOperation {
                 indexOfNode=0;
             }
             String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
-            addFile(nodeNavrep, filePath, filename, true);
+            addFile(nodeNavrep, filePath, filename, fileType, true);
             replicationCount++;
         }
     }
