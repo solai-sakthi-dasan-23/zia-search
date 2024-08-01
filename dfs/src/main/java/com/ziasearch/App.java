@@ -2,7 +2,6 @@ package com.ziasearch;
 
 import java.util.Scanner;
 
-import javax.sound.midi.Soundbank;
 
 /**
  * Hello world!
@@ -10,6 +9,7 @@ import javax.sound.midi.Soundbank;
  */
 public class App 
 {
+    @SuppressWarnings("unused")
     public static void main( String[] args )
     {
         System.out.println("WELCOME TO DISTRIBUTED FILE SYSTEM");
