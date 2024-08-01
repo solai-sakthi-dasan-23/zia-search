@@ -49,7 +49,7 @@ public class ServerOperation {
                 scanner.nextLine();
                 System.out.println("Enter the file path where the mentioned file is present");
                 String filePath = scanner.nextLine();
-                addFile(nodeNav, filePath, filename);
+                addFile(nodeNav, filePath, filename, false);
                 replicateAddedFile(filePath, filename);
                 break;
 
@@ -85,11 +85,16 @@ public class ServerOperation {
         return true;
     }
 
-    private boolean addFile(String nodeNav, String filePath, String filename) throws Exception {
+    private boolean addFile(String nodeNav, String filePath, String filename, boolean replication) throws Exception {
         System.out.println("You choose to add a new file : " + filename);
 
         Path sourcePath = Paths.get(filePath + "\\" + filename);
-        Path destinationPath = Paths.get(nodeNav + "\\" + filename);
+        Path destinationPath;
+        if (replication==true) {
+            destinationPath = Paths.get(nodeNav + "\\" + filename + "_replicated");
+        } else {
+            destinationPath = Paths.get(nodeNav + "\\" + filename);
+        }
         
         // Get the destination directory
         Path destinationDir = destinationPath.getParent();
@@ -119,16 +124,15 @@ public class ServerOperation {
             nodesListFiles.add(file.getName());
         }
         int indexOfNode = nodesListFiles.indexOf(nodeName);
-        indexOfNode++;
         int replicationCount = 0;
         while (replicationCount<=3) {
-            String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
-            addFile(nodeNavrep, filePath, filename);
-            replicationCount++;
             indexOfNode++;
-            if (indexOfNode>10) {
+            if (indexOfNode==10) {
                 indexOfNode=0;
             }
+            String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
+            addFile(nodeNavrep, filePath, filename, true);
+            replicationCount++;
         }
     }
 }
