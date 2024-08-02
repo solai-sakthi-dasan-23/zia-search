@@ -126,7 +126,7 @@ public class ServerOperation {
 
     private void removeFile(String nodeNav, String filename, String fileType) {
         System.out.println("You choose to remove the existing file : " + filename + "." + fileType);
-        String filePath = nodeNav + "\\" + filename + "." + fileType;
+        String filePath = nodeNav + File.separator + filename + "." + fileType;
 
         File file = new File(filePath);
 
@@ -140,7 +140,7 @@ public class ServerOperation {
     private void modifyFile(String nodeNav, String filename, String content)  {
         System.out.println("You choose to modify a existing file : " + filename);
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nodeNav + "\\" + filename))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nodeNav + File.separator + filename))) {
             writer.write(content);
             System.out.println("File has been rewritten successfully.");
         } catch (IOException e) {
@@ -151,7 +151,7 @@ public class ServerOperation {
 
     private void retrieveFile(String nodeNav, String filename) {
         System.out.println("You choose to retrieve a existing file : " + filename + "." + fileType); 
-        File file = new File(nodeNav + "\\" + filename + "." + fileType);
+        File file = new File(nodeNav + File.separator + filename + "." + fileType);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
@@ -167,13 +167,13 @@ public class ServerOperation {
     private void addFile(String nodeNav, String filePath, String filename, String fileType, boolean replication) throws Exception {
         
 
-        Path sourcePath = Paths.get(filePath + "\\" + filename + "." + fileType);
+        Path sourcePath = Paths.get(filePath + File.separator + filename + "." + fileType);
         Path destinationPath;
         if (replication==true) {
-            destinationPath = Paths.get(nodeNav + "\\" + filename + "_replicated" + "." + fileType);
+            destinationPath = Paths.get(nodeNav + File.separator + filename + "_replicated" + "." + fileType);
         } else {    
             System.out.println("You choose to add a new file : " + filename + "." + fileType);
-            destinationPath = Paths.get(nodeNav + "\\" + filename + "." + fileType);
+            destinationPath = Paths.get(nodeNav + File.separator + filename + "." + fileType);
         }
 
         try {

@@ -1,10 +1,6 @@
 package com.ziasearch;
 
 import java.io.File;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class NameNode {
@@ -24,7 +20,7 @@ public class NameNode {
                 for (File fileS : nodeFilesList) {
                     //System.out.println(fileS.getName() + "  " + fileS.length() + "-bytes" + "   " + dataNodes.getLastModifiedTime(fileS.lastModified()));
                     //System.out.print("  ");
-                    dataNodes.getMetadata(nodesFolder.getAbsolutePath()+ "\\" + file.getName() + "\\" +  fileS.getName());
+                    dataNodes.getMetadata(nodesFolder.getAbsolutePath()+ File.separator + file.getName() + File.separator +  fileS.getName());
                 }
                 System.out.println();
             }
