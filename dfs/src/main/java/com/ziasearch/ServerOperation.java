@@ -46,7 +46,9 @@ public class ServerOperation {
         System.out.print("Enter the file name : ");
         fileName = scanner.nextLine();
 
-        System.out.println("Enter the file type");
+        System.out.println();
+
+        System.out.print("Enter the file type : ");
         fileType = scanner.nextLine();
                 
         switch (operation) {
@@ -122,7 +124,7 @@ public class ServerOperation {
         }
     }
 
-    private boolean removeFile(String nodeNav, String filename, String fileType) {
+    private void removeFile(String nodeNav, String filename, String fileType) {
         System.out.println("You choose to remove the existing file : " + filename + "." + fileType);
         String filePath = nodeNav + "\\" + filename + "." + fileType;
 
@@ -133,10 +135,9 @@ public class ServerOperation {
         } else {
             System.err.println("Failed to delete the file.");
         }
-        return true;
     }
 
-    private boolean modifyFile(String nodeNav, String filename, String content)  {
+    private void modifyFile(String nodeNav, String filename, String content)  {
         System.out.println("You choose to modify a existing file : " + filename);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nodeNav + "\\" + filename))) {
@@ -146,10 +147,9 @@ public class ServerOperation {
             System.err.println("Error writing to the file.");
             e.printStackTrace();
         }
-        return true;
     }
 
-    private boolean retrieveFile(String nodeNav, String filename) {
+    private void retrieveFile(String nodeNav, String filename) {
         System.out.println("You choose to retrieve a existing file : " + filename + "." + fileType); 
         File file = new File(nodeNav + "\\" + filename + "." + fileType);
 
@@ -162,17 +162,17 @@ public class ServerOperation {
             System.err.println("Error reading the file.");
             e.printStackTrace();
         }
-        return true;
     }
 
-    private boolean addFile(String nodeNav, String filePath, String filename, String fileType, boolean replication) throws Exception {
-        System.out.println("You choose to add a new file : " + filename + "." + fileType);
+    private void addFile(String nodeNav, String filePath, String filename, String fileType, boolean replication) throws Exception {
+        
 
         Path sourcePath = Paths.get(filePath + "\\" + filename + "." + fileType);
         Path destinationPath;
         if (replication==true) {
             destinationPath = Paths.get(nodeNav + "\\" + filename + "_replicated" + "." + fileType);
-        } else {
+        } else {    
+            System.out.println("You choose to add a new file : " + filename + "." + fileType);
             destinationPath = Paths.get(nodeNav + "\\" + filename + "." + fileType);
         }
 
@@ -184,7 +184,6 @@ public class ServerOperation {
             System.err.println("Error copying file.");
             e.printStackTrace();
         }
-        return true;
     }
 
     public void replicateAddedFile(String filePath, String filename) throws Exception {

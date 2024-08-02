@@ -1,6 +1,16 @@
 package com.ziasearch;
 
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public class DataNodes {
@@ -45,5 +55,22 @@ public class DataNodes {
         File node = new File(nodesFolder.getAbsolutePath(), nodeName);
         System.out.println(node.getAbsolutePath());
         return node.getAbsolutePath();
+    }
+
+    public void getMetadata(String file) {
+        File fileStud = new File(file);
+        System.out.println("File Name: " + fileStud.getName());
+        System.out.println("File Size: " + fileStud.length() + " bytes");
+        System.out.println("Last Modified: " + getLastModifiedTime(fileStud.lastModified()));
+        System.out.println("Is Directory: " + fileStud.isDirectory());
+        System.out.println();
+    }
+
+    public String getLastModifiedTime(long milliseconds) {
+
+        Instant instant = Instant.ofEpochMilli(milliseconds);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return localDateTime.format(formatter);
     }
 }
