@@ -1,15 +1,9 @@
 package com.ziasearch;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
@@ -40,16 +34,9 @@ public class NameNode {
 
     public String getLastModifiedTime(long milliseconds) {
 
-        // Convert epoch milliseconds to Instant
         Instant instant = Instant.ofEpochMilli(milliseconds);
-
-        // Convert Instant to LocalDateTime using system default time zone
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-
-        // Define the formatter
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-        // Format LocalDateTime to string
         return localDateTime.format(formatter);
     }
 }
