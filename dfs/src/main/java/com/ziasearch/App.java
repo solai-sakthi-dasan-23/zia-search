@@ -13,11 +13,11 @@ public class App
     @SuppressWarnings("unused")
     public static void main( String[] args ) throws Exception
     {
-        System.out.println("WELCOME TO DISTRIBUTED FILE SYSTEM");
+        JavaGrid.println("WELCOME TO DISTRIBUTED FILE SYSTEM");
         System.out.println();
 
         //Getting the user id
-        System.out.print("Enter user id : ");
+        JavaGrid.print("Enter user id : ");
         Scanner scanner = new Scanner(System.in);
         int userId = scanner.nextInt();
         User user = new User(userId);

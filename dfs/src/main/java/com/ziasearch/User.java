@@ -7,7 +7,7 @@ public class User {
 
     public User(int userId) throws InterruptedException{
         this.userId = userId;
-        System.out.println("Hello, user " + userId);
-        Thread.sleep(1000);
+        JavaGrid.println("Hello, user " + userId);
+        JavaGrid.wait(1000);
     }
 }

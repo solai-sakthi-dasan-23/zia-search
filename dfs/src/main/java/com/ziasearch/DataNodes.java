@@ -52,12 +52,12 @@ public class DataNodes {
         return node.getAbsolutePath();
     }
 
-    public void getMetadata(String file) {
+    public void getMetadata(String file) throws InterruptedException {
         File fileStud = new File(file);
-        System.out.println("File Name: " + fileStud.getName());
-        System.out.println("File Size: " + fileStud.length() + " bytes");
-        System.out.println("Last Modified: " + getLastModifiedTime(fileStud.lastModified()));
-        System.out.println("Is Directory: " + fileStud.isDirectory());
+        JavaGrid.println("File Name: " + fileStud.getName(), 15);
+        JavaGrid.println("File Size: " + fileStud.length() + " bytes", 15);
+        JavaGrid.println("Last Modified: " + getLastModifiedTime(fileStud.lastModified()), 15);
+        JavaGrid.println("Is Directory: " + fileStud.isDirectory(), 15);
         System.out.println();
     }
 

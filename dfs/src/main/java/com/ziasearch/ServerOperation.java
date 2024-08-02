@@ -18,44 +18,43 @@ public class ServerOperation {
     Scanner scanner = new Scanner(System.in);
     DataNodes dataNodes = new DataNodes();
     String nodeName, fileType, fileName;
-    
-    public int operationType () {
-        System.out.println("What is the operation you need to perform");
-        System.out.println("1. Add a File");
-        System.out.println("2. Retrieve a File");
-        System.out.println("3. Modify a File");
-        System.out.println("4. Remove a File");
+
+    public int operationType() throws InterruptedException {
+        JavaGrid.println("What is the operation you need to perform");
+        JavaGrid.println("1. Add a File");
+        JavaGrid.println("2. Retrieve a File");
+        JavaGrid.println("3. Modify a File");
+        JavaGrid.println("4. Remove a File");
         System.out.println();
-        System.out.print("Enter the number for your operation respectively : ");
+        JavaGrid.print("Enter the number for your operation respectively : ", 20);
         int operation = scanner.nextInt();
         return operation;
     }
 
     public void operationNavigation(int operation) throws Exception {
 
-        
-        //get the file name, node that the file should be acted in the node
+        // get the file name, node that the file should be acted in the node
         System.out.println();
-        System.out.print("Enter the node name : ");
+        JavaGrid.print("Enter the node name : ",20);
         scanner.nextLine();
         nodeName = scanner.nextLine();
         String nodeNav = dataNodes.enterNode(nodeName);
 
         System.out.println();
-        
-        System.out.print("Enter the file name : ");
+
+        JavaGrid.print("Enter the file name : ",20);
         fileName = scanner.nextLine();
 
         System.out.println();
 
-        System.out.print("Enter the file type : ");
+        JavaGrid.print("Enter the file type : ", 20);
         fileType = scanner.nextLine();
-                
+
         switch (operation) {
 
             case 1:
                 scanner.nextLine();
-                System.out.println("Enter the file path where the mentioned file is present");
+                JavaGrid.print("Enter the file path where the mentioned file is present", 20);
                 String filePath = scanner.nextLine();
                 addFile(nodeNav, filePath, fileName, fileType, false);
                 replicateAddedFile(filePath, fileName);
@@ -66,17 +65,17 @@ public class ServerOperation {
                 break;
 
             case 3:
-                System.out.println("Enter the content to the file");
+                JavaGrid.print("Enter the content to the file : " , 20);
                 String content = scanner.nextLine();
-                modifyFile(nodeNav, fileName + "." + fileType , content);
-                modifyReplicatedFile(fileName,content);
+                modifyFile(nodeNav, fileName + "." + fileType, content);
+                modifyReplicatedFile(fileName, content);
                 break;
 
             case 4:
                 removeFile(nodeNav, fileName, fileType);
                 removeReplicatedFiles(nodeName, fileName + "_replicated");
                 break;
-        
+
             default:
                 break;
         }
@@ -92,10 +91,10 @@ public class ServerOperation {
         }
         int indexOfNode = nodesListFiles.indexOf(nodeName);
         int replicationCount = 0;
-        while (replicationCount<=3) {
+        while (replicationCount <= 3) {
             indexOfNode++;
-            if (indexOfNode==10) {
-                indexOfNode=0;
+            if (indexOfNode == 10) {
+                indexOfNode = 0;
             }
             String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
             removeFile(nodeNavrep, fileName, fileType);
@@ -113,10 +112,10 @@ public class ServerOperation {
         }
         int indexOfNode = nodesListFiles.indexOf(nodeName);
         int replicationCount = 0;
-        while (replicationCount<=3) {
+        while (replicationCount <= 3) {
             indexOfNode++;
-            if (indexOfNode==10) {
-                indexOfNode=0;
+            if (indexOfNode == 10) {
+                indexOfNode = 0;
             }
             String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
             modifyFile(nodeNavrep, filename + "_replicated" + "." + fileType, content);
@@ -124,64 +123,64 @@ public class ServerOperation {
         }
     }
 
-    private void removeFile(String nodeNav, String filename, String fileType) {
+    private void removeFile(String nodeNav, String filename, String fileType) throws InterruptedException {
         System.out.println("You choose to remove the existing file : " + filename + "." + fileType);
         String filePath = nodeNav + File.separator + filename + "." + fileType;
 
         File file = new File(filePath);
 
         if (file.delete()) {
-            System.out.println("File deleted successfully.");
+            JavaGrid.print("File deleted successfully.");
         } else {
-            System.err.println("Failed to delete the file.");
+            JavaGrid.print("Failed to delete the file.");
         }
     }
 
-    private void modifyFile(String nodeNav, String filename, String content)  {
-        System.out.println("You choose to modify a existing file : " + filename);
+    private void modifyFile(String nodeNav, String filename, String content) throws InterruptedException {
+        JavaGrid.print("You choose to modify a existing file : " + filename);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(nodeNav + File.separator + filename))) {
             writer.write(content);
-            System.out.println("File has been rewritten successfully.");
+            JavaGrid.print("File has been rewritten successfully.");
         } catch (IOException e) {
             System.err.println("Error writing to the file.");
             e.printStackTrace();
         }
     }
 
-    private void retrieveFile(String nodeNav, String filename) {
-        System.out.println("You choose to retrieve a existing file : " + filename + "." + fileType); 
+    private void retrieveFile(String nodeNav, String filename) throws InterruptedException {
+        JavaGrid.println("You choose to retrieve a existing file : " + filename + "." + fileType, 10);
         File file = new File(nodeNav + File.separator + filename + "." + fileType);
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                JavaGrid.println(line, 10);
             }
         } catch (IOException e) {
-            System.err.println("Error reading the file.");
+            JavaGrid.println("Error reading the file.");
             e.printStackTrace();
         }
     }
 
-    private void addFile(String nodeNav, String filePath, String filename, String fileType, boolean replication) throws Exception {
-        
+    private void addFile(String nodeNav, String filePath, String filename, String fileType, boolean replication)
+            throws Exception {
 
         Path sourcePath = Paths.get(filePath + File.separator + filename + "." + fileType);
         Path destinationPath;
-        if (replication==true) {
+        if (replication == true) {
             destinationPath = Paths.get(nodeNav + File.separator + filename + "_replicated" + "." + fileType);
-        } else {    
-            System.out.println("You choose to add a new file : " + filename + "." + fileType);
+        } else {
+            JavaGrid.println("You choose to add a new file : " + filename + "." + fileType);
             destinationPath = Paths.get(nodeNav + File.separator + filename + "." + fileType);
         }
 
         try {
             // Copy the file to the new location
             Files.copy(sourcePath, destinationPath);
-            System.out.println("File copied successfully.");
+            JavaGrid.println("File copied successfully.");
         } catch (IOException e) {
-            System.err.println("Error copying file.");
+            JavaGrid.println("Error copying file.");
             e.printStackTrace();
         }
     }
@@ -196,10 +195,10 @@ public class ServerOperation {
         }
         int indexOfNode = nodesListFiles.indexOf(nodeName);
         int replicationCount = 0;
-        while (replicationCount<=3) {
+        while (replicationCount <= 3) {
             indexOfNode++;
-            if (indexOfNode==10) {
-                indexOfNode=0;
+            if (indexOfNode == 10) {
+                indexOfNode = 0;
             }
             String nodeNavrep = dataNodes.enterNode(nodesListFiles.get(indexOfNode));
             addFile(nodeNavrep, filePath, filename, fileType, true);
