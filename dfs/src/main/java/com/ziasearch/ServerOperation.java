@@ -66,7 +66,7 @@ public class ServerOperation {
             case 3:
                 System.out.println("Enter the content to the file");
                 String content = scanner.nextLine();
-                modifyFile(nodeNav, fileName + "." +fileType , content);
+                modifyFile(nodeNav, fileName + "." + fileType , content);
                 modifyReplicatedFile(fileName,content);
                 break;
 
@@ -150,19 +150,15 @@ public class ServerOperation {
     }
 
     private boolean retrieveFile(String nodeNav, String filename) {
-        System.out.println("You choose to retrieve a existing file : " + filename); 
-        File file = new File(nodeNav + "\\" + filename);
+        System.out.println("You choose to retrieve a existing file : " + filename + "." + fileType); 
+        File file = new File(nodeNav + "\\" + filename + "." + fileType);
 
-        // Use try-with-resources to ensure resources are closed automatically
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
-            // Read lines one by one
             while ((line = reader.readLine()) != null) {
-                // Print each line (or process it as needed)
                 System.out.println(line);
             }
         } catch (IOException e) {
-            // Handle potential IO exceptions
             System.err.println("Error reading the file.");
             e.printStackTrace();
         }
